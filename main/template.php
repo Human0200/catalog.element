@@ -277,6 +277,7 @@ $bShowAdditionalBlock = strlen($status) || $bShowCheaperForm || $bShowSendGift |
 
 <?$this->SetViewTarget('PRODUCT_DETAIL_TEXT_INFO');?>
     <div class="content content--max-width js-detail-description" itemprop="description">
+        <?// Сам текст описания ?>
         <?if ($templateData['DETAIL_TEXT']):?>
             <?if ($bSKUDescription):?>
                 <?=$arResult['SKU']['CURRENT']['DETAIL_TEXT'];?>
@@ -285,6 +286,24 @@ $bShowAdditionalBlock = strlen($status) || $bShowCheaperForm || $bShowSendGift |
             <?endif;?>
         <?endif;?>
     </div>
+
+    <?// === Таблица вариаций прямо во вкладке "Описание" (id="desc") === ?>
+    <?php
+    if (function_exists('ShowProductVariationsTable')) {
+        $variationsHtml = ShowProductVariationsTable($arResult['ID']); // передаём ID явно
+        if ($variationsHtml) {
+            // Динамическая область для композита (чтобы цены/остатки не залипали в кэше)
+            $frame = new \Bitrix\Main\Page\FrameHelper('product_variations_'.$arResult['ID']);
+            $frame->begin();
+            ?>
+            <div class="content content--max-width product-variations-wrap" style="margin-top:20px;">
+                <?=$variationsHtml?>
+            </div>
+            <?php
+            $frame->end();
+        }
+    }
+    ?>
 <?$this->EndViewTarget();?>
 
 <?// files?>
